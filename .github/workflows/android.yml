@@ -45,3 +45,6 @@ jobs:
       
       - name: Check Gradle version
         run: ./gradlew --version
+
+      - name: Verify Android plugin
+        run: ./gradlew tasks
