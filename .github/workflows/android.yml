@@ -3,15 +3,18 @@ name: Build APK
 on:
   push:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # 👈 test Node 24 now
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5   # 👈 upgraded
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5  # 👈 upgraded
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -23,7 +26,7 @@ jobs:
         run: ./gradlew assembleDebug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4  # 👈 v4 is still OK (no v5 yet in many cases)
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/app-debug.apk
