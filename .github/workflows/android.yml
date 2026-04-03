@@ -19,12 +19,24 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Gradle
-        run: sudo apt-get update && sudo apt-get install -y gradle
+      # ✅ Install Android SDK
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
+      # ✅ Accept licenses
+      - name: Accept licenses
+        run: yes | sdkmanager --licenses
+
+      # ✅ Install required SDK tools
+      - name: Install SDK packages
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      # ✅ Build APK
       - name: Build APK
         run: gradle assembleDebug
 
+      # ✅ Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
