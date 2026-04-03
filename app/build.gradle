@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.example.officehours'
-    compileSdk 34   // 👈 MUST be here
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.officehours"
@@ -13,14 +13,6 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
-    }
-
-    buildTypes {
-        debug {
-        }
-        release {
-            minifyEnabled false
-        }
     }
 }
 
