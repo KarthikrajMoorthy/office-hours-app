@@ -24,5 +24,11 @@
         android:gravity="center"
         android:layout_width="250dp"
         android:layout_height="wrap_content"/>
-
+    <Button
+        android:id="@+id/reportBtn"
+        android:text="View Report"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </FrameLayout>
