@@ -6,6 +6,16 @@ import androidx.appcompat.app.AppCompatActivity
 
 class ReportActivity : AppCompatActivity() {
 
+    private fun exportPDF(text: String) {
+    val file = filesDir.absolutePath + "/report.pdf"
+    val writer = com.itextpdf.kernel.pdf.PdfWriter(file)
+    val pdf = com.itextpdf.kernel.pdf.PdfDocument(writer)
+    val doc = com.itextpdf.layout.Document(pdf)
+
+    doc.add(com.itextpdf.layout.element.Paragraph(text))
+    doc.close()
+    }
+    exportPDF(builder.toString())
     private fun exportCSV(data: String) {
     val fileName = "office_report.csv"
     openFileOutput(fileName, MODE_PRIVATE).use {
