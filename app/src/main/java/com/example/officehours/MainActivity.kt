@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
+import android.content.Intent
+import android.widget.Button
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +31,11 @@ class MainActivity : AppCompatActivity() {
 
         val statusText = findViewById<TextView>(R.id.statusText)
         val swipeView = findViewById<TextView>(R.id.swipeView)
+        val reportBtn = findViewById<Button>(R.id.reportBtn)
 
+        reportBtn.setOnClickListener {
+             startActivity(Intent(this, ReportActivity::class.java))
+        }
         requestPermissions()
 
         swipeView.setOnTouchListener { _, event ->
