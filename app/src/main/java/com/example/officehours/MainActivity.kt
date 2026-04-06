@@ -1,54 +1,136 @@
 package com.example.officehours
 
+import android.Manifest
+import android.app.*
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.view.MotionEvent
+import android.os.Handler
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import com.google.android.gms.location.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var startX = 0f
-    private var endX = 0f
-    private var startTime: Long = 0
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var officeLat = 12.991033
+    private var officeLng = 80.245636
     private var isWorking = false
+    private var startTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
         val statusText = findViewById<TextView>(R.id.statusText)
         val swipeView = findViewById<TextView>(R.id.swipeView)
+
+        requestPermissions()
 
         swipeView.setOnTouchListener { _, event ->
             when (event.action) {
 
-                MotionEvent.ACTION_DOWN -> {
-                    startX = event.x
-                }
+                android.view.MotionEvent.ACTION_DOWN -> {}
+                android.view.MotionEvent.ACTION_UP -> {
 
-                MotionEvent.ACTION_UP -> {
-                    endX = event.x
-                    val diff = endX - startX
+                    val diff = event.x - 0
 
-                    // 👉 Swipe Right = Start
                     if (diff > 150 && !isWorking) {
-                        startTime = System.currentTimeMillis()
-                        isWorking = true
-                        statusText.text = "Office Started ✅"
-                        swipeView.text = "👈 Swipe Left to Stop"
+                        checkLocationAndStart(statusText, swipeView)
                     }
 
-                    // 👉 Swipe Left = Stop
                     if (diff < -150 && isWorking) {
-                        val endTime = System.currentTimeMillis()
-                        val duration = (endTime - startTime) / 1000
-                        isWorking = false
-                        statusText.text = "Worked: $duration sec ⏱️"
-                        swipeView.text = "👉 Swipe Right to Start"
+                        stopWork(statusText, swipeView)
                     }
                 }
             }
             true
         }
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.POST_NOTIFICATIONS
+            ),
+            1
+        )
+    }
+
+    private fun checkLocationAndStart(statusText: TextView, swipeView: TextView) {
+
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) return
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+
+                val distance = FloatArray(1)
+                android.location.Location.distanceBetween(
+                    location.latitude, location.longitude,
+                    officeLat, officeLng,
+                    distance
+                )
+
+                if (distance[0] < 200) { // within 200 meters
+                    startTime = System.currentTimeMillis()
+                    isWorking = true
+                    statusText.text = "Office Started ✅"
+                    swipeView.text = "👈 Swipe Left to Stop"
+
+                    startLeaveNotification()
+                } else {
+                    statusText.text = "Not in office location ❌"
+                }
+            }
+        }
+    }
+
+    private fun stopWork(statusText: TextView, swipeView: TextView) {
+        val endTime = System.currentTimeMillis()
+        val duration = (endTime - startTime) / 1000
+
+        isWorking = false
+        statusText.text = "Worked: $duration sec ⏱️"
+        swipeView.text = "👉 Swipe Right to Start"
+    }
+
+    private fun startLeaveNotification() {
+
+        val handler = Handler()
+
+        handler.postDelayed({
+
+            val channelId = "office_channel"
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    channelId,
+                    "Office Alerts",
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+                notificationManager.createNotificationChannel(channel)
+            }
+
+            val notification = NotificationCompat.Builder(this, channelId)
+                .setContentTitle("Office Time Done")
+                .setContentText("Time to leave office 🏃")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .build()
+
+            notificationManager.notify(1, notification)
+
+        }, 8 * 60 * 60 * 1000) // 8 hours
     }
 }
