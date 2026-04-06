@@ -18,8 +18,8 @@ import android.widget.Button
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var officeLat = 12.991425
-    private var officeLng = 80.245939
+    private var officeLat = 13.000235 //12.991425
+    private var officeLng = 80.119567 //80.245939
     private var isWorking = false
     private var startTime: Long = 0
 
