@@ -26,7 +26,11 @@ jobs:
         run: yes | sdkmanager --licenses
 
       - name: Install SDK
-        run: sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
 
       - name: Grant permission
         run: chmod +x gradlew
