@@ -2,6 +2,7 @@
 <application android:label="Office App">
     <activity
     android:name=".MainActivity"
+    android:theme="@style/Theme.OfficeApp"
     android:exported="true">
 
     <intent-filter>
