@@ -6,6 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 
 class ReportActivity : AppCompatActivity() {
 
+    private fun exportCSV(data: String) {
+    val fileName = "office_report.csv"
+    openFileOutput(fileName, MODE_PRIVATE).use {
+        it.write(data.toByteArray())
+    }
+    }
+    exportCSV(builder.toString())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -22,7 +29,7 @@ class ReportActivity : AppCompatActivity() {
                 builder.append("Date: ${parts[0]} \nDuration: ${parts[1]} sec\n\n")
             }
         }
-
+       
         tv.text = builder.toString()
         setContentView(tv)
     }
