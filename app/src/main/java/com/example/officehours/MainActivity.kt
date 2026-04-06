@@ -9,9 +9,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val textView = TextView(this)
-        textView.text = "Office App Running Successfully ✅"
+        val tv = TextView(this)
+        tv.text = "App Working ✅"
 
-        setContentView(textView)
+        setContentView(tv)
     }
 }
