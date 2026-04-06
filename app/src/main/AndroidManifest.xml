@@ -6,7 +6,7 @@
     android:name=".MainActivity"
     android:theme="@style/Theme.OfficeApp"
     android:exported="true">
-
+    <activity android:name=".ReportActivity"/>
     <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
