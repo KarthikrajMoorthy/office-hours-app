@@ -16,8 +16,8 @@ import com.google.android.gms.location.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var officeLat = 12.991033
-    private var officeLng = 80.245636
+    private var officeLat = 12.991425
+    private var officeLng = 80.245939
     private var isWorking = false
     private var startTime: Long = 0
 
@@ -96,13 +96,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stopWork(statusText: TextView, swipeView: TextView) {
-        val endTime = System.currentTimeMillis()
-        val duration = (endTime - startTime) / 1000
+    val endTime = System.currentTimeMillis()
+    val duration = (endTime - startTime) / 1000
 
-        isWorking = false
-        statusText.text = "Worked: $duration sec ⏱️"
-        swipeView.text = "👉 Swipe Right to Start"
-    }
+    isWorking = false
+    statusText.text = "Worked: $duration sec ⏱️"
+    swipeView.text = "👉 Swipe Right to Start"
+
+    saveSession(duration) // ✅ SAVE DATA
+}
     private fun saveSession(duration: Long) {
     val prefs = getSharedPreferences("office_data", MODE_PRIVATE)
     val existing = prefs.getString("sessions", "") ?: ""
