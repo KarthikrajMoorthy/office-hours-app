@@ -103,7 +103,13 @@ class MainActivity : AppCompatActivity() {
         statusText.text = "Worked: $duration sec ⏱️"
         swipeView.text = "👉 Swipe Right to Start"
     }
+    private fun saveSession(duration: Long) {
+    val prefs = getSharedPreferences("office_data", MODE_PRIVATE)
+    val existing = prefs.getString("sessions", "") ?: ""
 
+    val newEntry = System.currentTimeMillis().toString() + "," + duration + ";"
+    prefs.edit().putString("sessions", existing + newEntry).apply()
+}
     private fun startLeaveNotification() {
 
         val handler = Handler()
