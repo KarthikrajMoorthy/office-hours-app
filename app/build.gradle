@@ -14,4 +14,15 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    // ✅ ADD THIS
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // ✅ ADD THIS
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
