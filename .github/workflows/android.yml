@@ -26,14 +26,13 @@ jobs:
         run: yes | sdkmanager --licenses
 
       - name: Install SDK
-        run: |
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+        run: sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
-      - name: Install Gradle
-        run: sudo apt-get update && sudo apt-get install -y gradle
+      - name: Grant permission
+        run: chmod +x gradlew
 
       - name: Build APK
-        run: gradle clean assembleDebug
+        run: ./gradlew clean assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
