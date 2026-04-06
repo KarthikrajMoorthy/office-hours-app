@@ -1,1 +1,6 @@
-// empty file
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
