@@ -19,7 +19,8 @@ class ReportActivity : AppCompatActivity() {
         data?.split(";")?.forEach {
             if (it.contains(",")) {
                 val parts = it.split(",")
-                builder.append("Date: ${parts[0]}\nDuration: ${parts[1]} sec\n\n")
+                val date = java.text.SimpleDateFormat("dd-MM-yyyy HH:mm").format(java.util.Date(parts[0].toLong()))
+                builder.append("Date: $date \nDuration: ${parts[1]} sec\n\n")          
             }
         }
 
@@ -29,19 +30,12 @@ class ReportActivity : AppCompatActivity() {
         // ✅ CALL FUNCTIONS INSIDE onCreate
         exportCSV(builder.toString())
         exportPDF(builder.toString())
+        android.widget.Toast.makeText(this, "Report Generated ✅", android.widget.Toast.LENGTH_LONG).show()
     }
-
 private fun exportCSV(data: String) {
     try {
-        val fileName = "office_report.csv"
-
-        val file = android.os.Environment.getExternalStoragePublicDirectory(
-            android.os.Environment.DIRECTORY_DOWNLOADS
-        )
-
-        val newFile = java.io.File(file, fileName)
-        newFile.writeText(data)
-
+        val file = java.io.File(getExternalFilesDir(null), "office_report.csv")
+        file.writeText(data)
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -49,15 +43,9 @@ private fun exportCSV(data: String) {
 
 private fun exportPDF(text: String) {
     try {
-        val fileName = "office_report.pdf"
+        val file = java.io.File(getExternalFilesDir(null), "office_report.pdf")
 
-        val file = android.os.Environment.getExternalStoragePublicDirectory(
-            android.os.Environment.DIRECTORY_DOWNLOADS
-        )
-
-        val newFile = java.io.File(file, fileName)
-
-        val writer = com.itextpdf.kernel.pdf.PdfWriter(newFile)
+        val writer = com.itextpdf.kernel.pdf.PdfWriter(file)
         val pdf = com.itextpdf.kernel.pdf.PdfDocument(writer)
         val doc = com.itextpdf.layout.Document(pdf)
 
