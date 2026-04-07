@@ -31,24 +31,41 @@ class ReportActivity : AppCompatActivity() {
         exportPDF(builder.toString())
     }
 
-    private fun exportCSV(data: String) {
+private fun exportCSV(data: String) {
+    try {
         val fileName = "office_report.csv"
-        openFileOutput(fileName, MODE_PRIVATE).use {
-            it.write(data.toByteArray())
-        }
-    }
 
-    private fun exportPDF(text: String) {
-        try {
-            val file = filesDir.absolutePath + "/report.pdf"
-            val writer = com.itextpdf.kernel.pdf.PdfWriter(file)
-            val pdf = com.itextpdf.kernel.pdf.PdfDocument(writer)
-            val doc = com.itextpdf.layout.Document(pdf)
+        val file = android.os.Environment.getExternalStoragePublicDirectory(
+            android.os.Environment.DIRECTORY_DOWNLOADS
+        )
 
-            doc.add(com.itextpdf.layout.element.Paragraph(text))
-            doc.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        val newFile = java.io.File(file, fileName)
+        newFile.writeText(data)
+
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
+}
+
+private fun exportPDF(text: String) {
+    try {
+        val fileName = "office_report.pdf"
+
+        val file = android.os.Environment.getExternalStoragePublicDirectory(
+            android.os.Environment.DIRECTORY_DOWNLOADS
+        )
+
+        val newFile = java.io.File(file, fileName)
+
+        val writer = com.itextpdf.kernel.pdf.PdfWriter(newFile)
+        val pdf = com.itextpdf.kernel.pdf.PdfDocument(writer)
+        val doc = com.itextpdf.layout.Document(pdf)
+
+        doc.add(com.itextpdf.layout.element.Paragraph(text))
+        doc.close()
+
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
 }
