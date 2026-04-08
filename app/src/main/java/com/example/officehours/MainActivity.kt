@@ -32,7 +32,13 @@ class MainActivity : AppCompatActivity() {
         val statusText = findViewById<TextView>(R.id.statusText)
         val swipeView = findViewById<TextView>(R.id.swipeView)
         val reportBtn = findViewById<Button>(R.id.reportBtn)
+        val prefs = getSharedPreferences("office_data", MODE_PRIVATE)
+        val savedStart = prefs.getLong("start_time", 0)
 
+        if (savedStart > 0) {
+        isWorking = true
+        statusText.text = "Office Running..."
+        }
         reportBtn.setOnClickListener {
              startActivity(Intent(this, ReportActivity::class.java))
         }
@@ -92,6 +98,8 @@ class MainActivity : AppCompatActivity() {
                     isWorking = true
                     statusText.text = "Office Started ✅"
                     swipeView.text = "👈 Swipe Left to Stop"
+                    val prefs = getSharedPreferences("office_data", MODE_PRIVATE)
+                        prefs.edit().putLong("start_time", System.currentTimeMillis()).apply()
 
                     startLeaveNotification()
                 } else {
@@ -103,7 +111,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun stopWork(statusText: TextView, swipeView: TextView) {
     val endTime = System.currentTimeMillis()
-    val duration = (endTime - startTime) / 1000
+    val prefs = getSharedPreferences("office_data", MODE_PRIVATE)
+    val savedStart = prefs.getLong("start_time", 0)
+    val duration = (endTime - savedStart) / 1000
 
     isWorking = false
     statusText.text = "Worked: $duration sec ⏱️"
